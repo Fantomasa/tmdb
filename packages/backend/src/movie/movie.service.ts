@@ -13,8 +13,4 @@ export class MovieService {
 
     return { success: true, content: randomMovie };
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} movie`;
-  }
 }
