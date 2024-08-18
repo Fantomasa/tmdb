@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // import { ContentDto } from "./dto/trending-movie.dto";
 import { TmdbService } from "src/tmdb/tmdb.service";
-import { RequestResponseDto } from "./dto/request-response.dto";
+import { RequestResponseDto } from "@shared/request-response.dto";
 
 @Injectable()
 export class MovieService {
