@@ -1,26 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  private readonly saltRounds = 10;
+  private readonly jwtSecret = process.env.JWT_SECRET;
+
+  // Hash the password
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, this.saltRounds);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  // Validate the password
+  async validatePassword(password: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  // Generate JWT token
+  createToken(userId: string): string {
+    return jwt.sign({ userId }, this.jwtSecret, { expiresIn: "1d" });
   }
 }

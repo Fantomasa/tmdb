@@ -9,6 +9,7 @@ import { SearchModule } from "./search/search.module";
 import { TmdbService } from "./tmdb/tmdb.service";
 import { TmdbModule } from "./tmdb/tmdb.module";
 import envVars from "./config/envVars";
+import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import envVars from "./config/envVars";
     TvModule,
     SearchModule,
     TmdbModule,
-    ConfigModule.forRoot({ isGlobal: true, load: [envVars] })
+    ConfigModule.forRoot({ isGlobal: true, load: [envVars], envFilePath: ".env" }),
+    MongooseModule.forRoot(process.env.MONGO_URI)
   ],
   controllers: [AppController],
   providers: [AppService, TmdbService]

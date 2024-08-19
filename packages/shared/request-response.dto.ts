@@ -5,5 +5,7 @@ export class RequestResponseDto {
 
   message?: string;
 
-  content: ContentDto;
+  content?: ContentDto;
+  trailers?: ContentDto;
+  similar?: ContentDto;
 }
