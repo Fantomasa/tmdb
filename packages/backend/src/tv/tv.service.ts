@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTvDto } from './dto/create-tv.dto';
-import { UpdateTvDto } from './dto/update-tv.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { RequestResponseDto } from "@shared/request-response.dto";
+import { TmdbService } from "src/tmdb/tmdb.service";
 
 @Injectable()
 export class TvService {
-  create(createTvDto: CreateTvDto) {
-    return 'This action adds a new tv';
+  constructor(private readonly tmdbService: TmdbService) {}
+
+  async trending(): Promise<RequestResponseDto> {
+    const data = await this.tmdbService.fetchFromTMDB("https://api.themoviedb.org/3/trending/tv/day?language=en-US");
+    const randomTV = data.results[Math.floor(Math.random() * data.results?.length)];
+
+    return { success: true, content: randomTV };
   }
 
-  findAll() {
-    return `This action returns all tv`;
+  async trailers(id: number) {
+    const data = await this.tmdbService.fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/videos?language=en-US`);
+    if (!data.results) throw new NotFoundException(`Movie with ID: ${id} not found`);
+    return { success: true, trailers: data.results };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tv`;
+  async details(id: number) {
+    const data = await this.tmdbService.fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}?language=en-US`);
+    if (!data) throw new NotFoundException(`Movie with ID: ${id} not found`);
+    return { success: true, content: data };
   }
 
-  update(id: number, updateTvDto: UpdateTvDto) {
-    return `This action updates a #${id} tv`;
+  async simular(id: number) {
+    const data = await this.tmdbService.fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/similar?language=en-US&page=1`);
+    if (!data.results) throw new NotFoundException(`Similar movies with ID: ${id} not found`);
+    return { success: true, similar: data.results };
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} tv`;
+  async getByCategory(category: string) {
+    const data = await this.tmdbService.fetchFromTMDB(`https://api.themoviedb.org/3/tv/${category}?language=en-US&page=1`);
+    if (!data.results) throw new NotFoundException(`Movies with category ${category} not found`);
+    return { success: true, content: data.results };
   }
 }

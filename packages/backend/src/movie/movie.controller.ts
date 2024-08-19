@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
 import { MovieService } from "./movie.service";
 
 @Controller("movie")
@@ -11,21 +11,21 @@ export class MovieController {
   }
 
   @Get("/:id/trailers")
-  trailers(@Param("id") id: string) {
-    return `${id} Trailers`;
+  trailers(@Param("id", ParseIntPipe) id: number) {
+    return this.movieService.trailers(id);
   }
 
   @Get("/:id/details")
-  details(@Param("id") id: string) {
-    return `${id} Details`;
+  details(@Param("id", ParseIntPipe) id: number) {
+    return this.movieService.details(id);
   }
 
   @Get("/:id/similar")
-  similar(@Param("id") id: string) {
-    return `${id} Similar`;
+  similar(@Param("id", ParseIntPipe) id: number) {
+    return this.movieService.similar(id);
   }
   @Get("/:category")
   category(@Param("category") category: string) {
-    return `${category} category`;
+    return this.movieService.moviesByCategory(category);
   }
 }

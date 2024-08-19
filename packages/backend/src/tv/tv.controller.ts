@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TvService } from './tv.service';
-import { CreateTvDto } from './dto/create-tv.dto';
-import { UpdateTvDto } from './dto/update-tv.dto';
+import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { TvService } from "./tv.service";
 
-@Controller('tv')
+@Controller("tv")
 export class TvController {
   constructor(private readonly tvService: TvService) {}
 
-  @Post()
-  create(@Body() createTvDto: CreateTvDto) {
-    return this.tvService.create(createTvDto);
+  @Get("/trending")
+  trending() {
+    return this.tvService.trending();
   }
 
-  @Get()
-  findAll() {
-    return this.tvService.findAll();
+  @Get(":id/trailers")
+  trailers(@Param("id", ParseIntPipe) id: number) {
+    return this.tvService.trailers(id);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tvService.findOne(+id);
+  @Get(":id/details")
+  details(@Param("id", ParseIntPipe) id: number) {
+    return this.tvService.details(id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTvDto: UpdateTvDto) {
-    return this.tvService.update(+id, updateTvDto);
+  @Get(":id/similar")
+  similar(@Param("id", ParseIntPipe) id: number) {
+    return this.tvService.simular(id);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tvService.remove(+id);
+  @Get(":category")
+  category(@Param("category") category: string) {
+    return this.tvService.getByCategory(category);
   }
 }
